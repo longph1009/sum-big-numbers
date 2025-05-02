@@ -1,132 +1,107 @@
-# Testing Guide for `test_core.py`
+```markdown
+# Installation and Usage Guide for `MyBigNumber` API
 
-This guide provides step-by-step instructions to run the test suite for the `MyBigNumber` class implemented in `core.py`.
-
----
-
-## **Prerequisites**
-1. **Python 3.x** installed on your system.
-2. Ensure `core.py` (containing the `MyBigNumber` class) is in the same directory as `test_core.py`.
+This guide provides step-by-step instructions to install, run, and manage the `MyBigNumber` API using Flask.
 
 ---
 
-## **Project Structure**
-Your project directory should look like this:
+## **1. Prerequisites**
+Before proceeding, ensure you have the following installed:
+- **Python 3.x**: Download and install from [python.org](https://www.python.org/).
+- **Git** (optional): For cloning the repository if applicable.
+
+---
+
+### **Step 1: Create a Virtual Environment**
+To isolate dependencies, create a virtual environment:
+```bash
+python -m venv venv
 ```
-your_project_folder/
+
+### **Step 2: Activate the Virtual Environment**
+- **Windows**:
+  ```bash
+  venv\Scripts\activate
+  ```
+- **macOS/Linux**:
+  ```bash
+  source venv/bin/activate
+  ```
+
+After activation, you should see `(venv)` in your terminal prompt.
+
+### **Step 3: Install Dependencies**
+Install the required libraries using the `requirements.txt` file:
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## **2. Running the Application**
+
+### **Step 1: Start the Flask Server**
+Run the application using:
+```bash
+python app.py
+```
+
+By default, the server runs on `http://localhost:5000`. 
+```bash
+flask run
+```
+
+### **Step 2: Test the API**
+You can test the API using tools like Postman, cURL, or directly in your browser.
+
+#### **Example Request**
+```bash
+curl -X POST http://localhost:5000/sum \
+-H "Content-Type: application/json" \
+-d '{"num1": "123.45", "num2": "-67.89"}'
+```
+
+#### **Example Response**
+```json
+{
+  "result": "55.56",
+  "num1": "123.45",
+  "num2": "-67.89"
+}
+```
+
+---
+
+## **3. Stopping the Application**
+
+### **Step 1: Stop the Flask Server**
+To stop the server, press `Ctrl + C` in the terminal where the server is running.
+
+### **Step 2: Deactivate the Virtual Environment**
+Once the server is stopped, deactivate the virtual environment:
+```bash
+deactivate
+```
+
+---
+
+## **4. Directory Structure**
+Your project should look like this:
+```
+your_project/
 ├── core.py          # Contains the MyBigNumber implementation
-└── test_core.py     # Test suite for MyBigNumber
+├── app.py           # Flask API
+├── requirements.txt # List of dependencies
+└── venv/            # Virtual environment folder
 ```
 
 ---
 
-## **Running the Tests**
+## **5. Additional Notes**
+- **Debug Mode**: The Flask server runs in debug mode by default (`debug=True` in `app.run()`). This is useful for development but should be disabled in production.
+- **Scaling**: For production environments, consider deploying the API using a WSGI server like Gunicorn or uWSGI.
 
-### **1. Using `unittest` Module**
-Open a terminal and navigate to the project directory. Run:
-```bash
-python -m unittest test_core.py
+---
+
+For further assistance, refer to the official Flask documentation: [Flask Documentation](https://flask.palletsprojects.com/).
 ```
-
-### **2. Direct Execution**
-Alternatively, execute the test file directly:
-```bash
-python test_core.py
-```
-
----
-
-## **Expected Output**
-- **All tests pass**:  
-  ```
-  .....
-  ----------------------------------------------------------------------
-  Ran 5 tests in 0.001s
-
-  OK
-  ```
-- **Test failures/errors**:  
-  Detailed logs about which test(s) failed and why.
-
----
-
-## **Test Cases Overview**
-The test suite validates the `MyBigNumber.sum()` method for:
-1. **Positive/Negative Integers**  
-   - `test_sum_positive_integers`  
-   - `test_sum_negative_integers`
-2. **Decimal Numbers**  
-   - `test_sum_positive_decimals`  
-   - `test_sum_negative_decimals`
-3. **Edge Cases**  
-   - Leading zeros (`test_sum_leading_zeros`).  
-   - Mixing integers and decimals (`test_sum_integer_and_decimal`).  
-4. **Input Validation** 
-   - Rejects multiple commas/decimals (`test_multiple_commas`).  
-   - Rejects invalid characters (`test_invalid_characters`).
-
----
-
-## **Troubleshooting**
-- **ImportError**: Ensure `core.py` exists and contains the `MyBigNumber` class.
-- **Test Failures**:  
-  - Check if `MyBigNumber.sum()` handles edge cases (e.g., decimals, negative numbers).  
-  - Verify input validation logic (e.g., commas vs. periods).
-- **Syntax Errors**: Ensure Python 3 compatibility.
-
-For further details, inspect the test logs or debug specific test cases.
-
-
-**Brief Overview of the Large Number Summation Code (`MyBigNumber`):**
-
-This code implements the `MyBigNumber` class to perform **addition of large numbers** (in string format), supporting integers, decimals, and negative numbers. Key features include:
-
----
-
-### **Core Functionality:**
-1. **Flexible Input Handling**:
-   - Supports both **commas (`,`)** and **periods (`.`)** as decimal separators.
-   - Automatically removes **leading zeros** (e.g., `00123` → `123`).
-   - Validates inputs: rejects numbers with **multiple decimal separators** or invalid characters (e.g., letters).
-
-2. **Integer and Decimal Addition**:
-   - Splits numbers into **integer** and **decimal parts** for separate processing.
-   - Uses **carry-over logic** for digit-by-digit addition (e.g., `9 + 9 = 18` → carry `1`).
-
-3. **Negative Number Handling**:
-   - Converts addition of negative numbers into **subtraction** (e.g., `10 + (-5)` → `10 - 5`).
-   - Uses comparison logic to determine the sign of the result when numbers have mixed signs.
-
-4. **Comparison Logic**:
-   - The `compare()` method checks if one number is larger than another by analyzing digits, which is critical for subtraction operations.
-
-5. **Detailed Logging**:
-   - Logs all operations to `core.log` for debugging (e.g., input validation, intermediate steps).
-
----
-
-### **Key Components:**
-- **`sum()` Method**:
-  - Validates inputs (`checkBigNumber`).
-  - Splits numbers into integer/decimal parts and processes their signs.
-  - Combines results after handling addition/subtraction for each part.
-
-- **Helper Methods**:
-  - `sumDigit()`: Adds single digits with carry-over.
-  - `subtractDigit()`: Subtracts single digits with borrowing.
-  - `sumDecimal()`/`sumInteger()`: Handles decimal and integer parts separately.
-
----
-
-### **Example Workflow:**
-- **Input**: `"123.45" + "-67.89"`  
-  **Processing**:
-  1. Split into:  
-     - Number 1: `123` (integer), `45` (decimal), sign `+`  
-     - Number 2: `67` (integer), `89` (decimal), sign `-`  
-  2. Convert to subtraction: `123.45 - 67.89`  
-  3. Result: `"55.56"`.
-
----
-
-The code ensures **high precision** for extremely large numbers (beyond primitive data type limits) and focuses on **exception handling** to gracefully manage invalid inputs.
